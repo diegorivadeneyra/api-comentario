@@ -7,8 +7,12 @@ def lambda_handler(event, context):
     # Entrada (json)
     print(event)
 
-    # ✅ tu entrada llega como string desde API Gateway → parseamos
-    data = json.loads(event['body'])
+    # ✅ Manejar body tanto si viene como string o como dict
+    body = event.get("body")
+    if isinstance(body, str):
+        data = json.loads(body)
+    else:
+        data = body
 
     tenant_id = data['tenant_id']     # ✅ antes event['body']['tenant_id']
     texto = data['texto']             # ✅ antes event['body']['texto']
@@ -20,7 +24,7 @@ def lambda_handler(event, context):
         'tenant_id': tenant_id,
         'uuid': uuidv1,
         'detalle': {
-          'texto': texto
+            'texto': texto
         }
     }
 
